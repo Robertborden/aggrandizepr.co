@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Terms of Service — Aggrandize PR</title>
+<meta name="description" content="Terms of use for aggrandizepr.co." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#060711; --bg-2:#0C0E1E; --glass:rgba(255,255,255,.04);
+    --stroke:rgba(255,255,255,.09); --stroke-2:rgba(255,255,255,.14);
+    --violet:#7C5CFF; --cyan:#22D3EE; --magenta:#FF5DA2;
+    --text:#F4F5FF; --muted:#9BA0C4; --maxw:880px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Inter",system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;-webkit-font-smoothing:antialiased}
+  a{color:var(--cyan);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
+  header{position:sticky;top:0;z-index:100;backdrop-filter:blur(14px);background:rgba(6,7,17,.6);border-bottom:1px solid var(--stroke)}
+  header .wrap{display:flex;align-items:center;justify-content:space-between;height:68px}
+  .logo{font-family:"Space Grotesk";font-weight:700;font-size:1.2rem}
+  .logo b{background:linear-gradient(90deg,var(--violet),var(--cyan));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .pill{font-family:"Space Grotesk";font-size:.82rem;font-weight:600;padding:.55rem 1.1rem;border-radius:100px;background:linear-gradient(90deg,var(--violet),var(--magenta));color:#fff}
+  .kicker{font-family:"JetBrains Mono";font-size:.74rem;letter-spacing:.18em;text-transform:uppercase;color:var(--magenta);margin:3.5rem 0 1rem}
+  h1{font-family:"Space Grotesk";font-weight:700;font-size:clamp(2rem,5vw,3rem);letter-spacing:-.02em;margin-bottom:.5rem}
+  h2{font-family:"Space Grotesk";font-weight:600;font-size:1.4rem;margin:2.4rem 0 .8rem}
+  p,li{color:var(--muted);margin-bottom:1rem}
+  strong{color:var(--text)}
+  ul{margin:0 0 1rem 1.3rem}
+  li{margin-bottom:.5rem}
+  address{font-style:normal;color:var(--muted);line-height:1.8;margin-bottom:1rem}
+  footer{border-top:1px solid var(--stroke);margin-top:4rem;padding:2.5rem 0}
+  .fbot{font-size:.82rem;color:var(--muted);display:flex;gap:1.2rem;flex-wrap:wrap}
+  .updated{font-family:"JetBrains Mono";font-size:.74rem;color:var(--cyan)}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <a href="/" class="logo grotesk">aggrandize<b>pr</b></a>
+  <a href="/" class="pill">Back to site</a>
+</div></header>
+
+<main class="wrap">
+  <div class="kicker">Legal</div>
+  <h1>Terms of Service</h1>
+  <p class="updated">Last updated: <span id="date"></span></p>
+
+  <p>These terms govern your use of <strong>aggrandizepr.co</strong> and the services described on it. By using this site or engaging our services, you agree to these terms.</p>
+
+  <h2>1. Use of this site</h2>
+  <p>This site is provided for general information about Aggrandize PR. Content may change without notice. You agree not to misuse the site, attempt to disrupt it, or use it for any unlawful purpose.</p>
+
+  <h2>2. Services</h2>
+  <p>Any engagement is governed by a separate written agreement. Nothing on this site constitutes a binding offer or guarantee of specific results. Case examples and metrics are illustrative and do not promise equivalent outcomes.</p>
+
+  <h2>3. Intellectual property</h2>
+  <p>All content, branding, and design on this site are owned by Aggrandize PR or its licensors. You may not reproduce or redistribute material without written permission.</p>
+
+  <h2>4. No warranties</h2>
+  <p>The site and information are provided "as is" without warranties of any kind. We do not guarantee uninterrupted or error-free operation.</p>
+
+  <h2>5. Limitation of liability</h2>
+  <p>To the fullest extent permitted by law, Aggrandize PR is not liable for any indirect, incidental, or consequential damages arising from your use of this site or our services.</p>
+
+  <h2>6. Third-party links</h2>
+  <p>We link to third-party sites (e.g., our ecosystem brands). We are not responsible for their content or practices.</p>
+
+  <h2>7. Changes</h2>
+  <p>We may update these terms periodically. Continued use after changes constitutes acceptance.</p>
+
+  <h2>8. Contact</h2>
+  <address>
+    Aggrandize PR<br>
+    11400 Forum Blvd<br>
+    Columbia, MO 65203, USA<br>
+    <a href="mailto:hello@aggrandizepr.co">hello@aggrandizepr.co</a>
+  </address>
+</main>
+
+<footer><div class="wrap">
+  <div class="fbot">
+    <span>© <span id="year"></span> Aggrandize PR.</span>
+    <a href="/privacy-policy">Privacy</a>
+    <a href="/terms">Terms</a>
+    <a href="/unsubscribe">Unsubscribe</a>
+  </div>
+</div></footer>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+  document.getElementById('date').textContent = new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+</script>
+</body>
+</html>

@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Aggrandize HQ — The Visibility Layer</title>
+<meta name="description" content="Aggrandize HQ establishes authority, directs perception, and organizes how you're found across media, search, and AI-driven systems. Part of the Aggrandize ecosystem." />
+<meta property="og:title" content="Aggrandize HQ — The Visibility Layer" />
+<meta property="og:description" content="We shape the signal across media, search, and AI-driven discovery." />
+<meta property="og:type" content="website" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#060711; --bg-2:#0C0E1E; --glass:rgba(255,255,255,.04);
+    --stroke:rgba(255,255,255,.09); --stroke-2:rgba(255,255,255,.14);
+    --violet:#7C5CFF; --cyan:#22D3EE; --magenta:#FF5DA2; --lime:#B6FF6E;
+    --text:#F4F5FF; --muted:#9BA0C4;
+    --maxw:1240px; --pad:clamp(1.1rem,4vw,3rem);
+    --r:22px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:"Inter",system-ui,sans-serif;background:var(--bg);color:var(--text);
+    line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  .grotesk{font-family:"Space Grotesk",sans-serif}
+  .mono{font-family:"JetBrains Mono",monospace}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 var(--pad)}
+
+  /* background layers */
+  #gl{position:fixed;inset:0;z-index:-2;width:100%;height:100%;
+    background:
+      radial-gradient(60% 60% at 20% 15%, rgba(124,92,255,.35), transparent 60%),
+      radial-gradient(55% 55% at 85% 25%, rgba(34,211,238,.25), transparent 60%),
+      radial-gradient(60% 60% at 60% 90%, rgba(255,93,162,.25), transparent 60%),
+      var(--bg)}
+  #stars{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.5}
+  .grain{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.04;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+  /* loader wipe */
+  #wipe{position:fixed;inset:0;z-index:200;background:linear-gradient(120deg,var(--violet),var(--magenta),var(--cyan));
+    transform-origin:top;transition:transform .8s cubic-bezier(.7,0,.2,1)}
+  #wipe.gone{transform:scaleY(0)}
+
+  /* NAV */
+  header{position:sticky;top:0;z-index:100;backdrop-filter:blur(14px);
+    background:rgba(6,7,17,.55);border-bottom:1px solid var(--stroke)}
+  header .wrap{display:flex;align-items:center;justify-content:space-between;height:70px}
+  .logo{font-family:"Space Grotesk";font-weight:700;font-size:1.2rem;letter-spacing:-.01em}
+  .logo b{background:linear-gradient(90deg,var(--violet),var(--cyan));-webkit-background-clip:text;
+    background-clip:text;color:transparent}
+  .navlinks{display:flex;gap:1.8rem;align-items:center}
+  .navlinks a:not(.pill){font-size:.88rem;color:var(--muted);transition:color .2s}
+  .navlinks a:hover{color:var(--text)}
+  .pill{font-family:"Space Grotesk";font-size:.82rem;font-weight:600;padding:.6rem 1.15rem;border-radius:100px;
+    background:linear-gradient(90deg,var(--violet),var(--magenta));color:#fff;transition:transform .2s,box-shadow .2s}
+  .pill:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(124,92,255,.4)}
+  @media(max-width:860px){.navlinks a:not(.pill){display:none}}
+
+  .tag{display:inline-flex;align-items:center;gap:.5rem;font-family:"JetBrains Mono";font-size:.72rem;
+    text-transform:uppercase;letter-spacing:.16em;color:var(--cyan);padding:.4rem .8rem;border:1px solid var(--stroke-2);
+    border-radius:100px;background:var(--glass)}
+  .tag::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--lime);box-shadow:0 0 10px var(--lime)}
+
+  /* HERO scroll-story */
+  .hero{min-height:96vh;display:flex;align-items:center;position:relative;padding:6rem 0 4rem}
+  #hcanvas{position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.7}
+  .hero .wrap{position:relative;z-index:2}
+  .hero h1{font-family:"Space Grotesk";font-weight:700;font-size:clamp(2.8rem,8vw,6.5rem);
+    line-height:.98;letter-spacing:-.03em;max-width:15ch}
+  .grad{background:linear-gradient(100deg,var(--violet),var(--cyan) 55%,var(--magenta));
+    -webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero .story{position:relative;height:1.05em;overflow:hidden}
+  .hero .story span{display:block;transition:transform .6s cubic-bezier(.7,0,.2,1),opacity .5s}
+  .hsub{margin-top:1.8rem;font-size:clamp(1.05rem,1.6vw,1.3rem);color:var(--muted);max-width:52ch}
+  .hero .cta-row{margin-top:2.4rem;display:flex;gap:1rem;flex-wrap:wrap;align-items:center}
+  .btn{font-family:"Space Grotesk";font-weight:600;font-size:.9rem;padding:.95rem 1.7rem;border-radius:100px;
+    display:inline-flex;align-items:center;gap:.55rem;transition:transform .2s,box-shadow .2s;cursor:pointer;border:none}
+  .btn-main{background:linear-gradient(90deg,var(--violet),var(--magenta));color:#fff}
+  .btn-main:hover{transform:translateY(-2px);box-shadow:0 14px 40px rgba(255,93,162,.35)}
+  .btn-ghost{background:var(--glass);border:1px solid var(--stroke-2);color:var(--text)}
+  .btn-ghost:hover{border-color:var(--cyan);transform:translateY(-2px)}
+  .scrollcue{margin-top:3rem;font-family:"JetBrains Mono";font-size:.72rem;color:var(--muted);
+    letter-spacing:.2em;text-transform:uppercase;animation:bob 2s ease-in-out infinite}
+  @keyframes bob{50%{transform:translateY(6px)}}
+
+  /* section shell */
+  section{padding:clamp(3.5rem,7vw,6rem) 0;position:relative;z-index:2}
+  .kicker{font-family:"JetBrains Mono";font-size:.74rem;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--magenta);margin-bottom:1rem}
+  h2{font-family:"Space Grotesk";font-weight:600;font-size:clamp(1.8rem,4vw,3.1rem);line-height:1.08;
+    letter-spacing:-.02em;max-width:20ch}
+
+  /* BENTO */
+  .bento{display:grid;grid-template-columns:repeat(12,1fr);gap:1rem;margin-top:2.6rem}
+  .tile{background:var(--glass);border:1px solid var(--stroke);border-radius:var(--r);padding:1.6rem;
+    position:relative;overflow:hidden;transition:transform .25s,border-color .25s;backdrop-filter:blur(6px)}
+  .tile::before{content:"";position:absolute;inset:0;border-radius:var(--r);padding:1px;
+    background:linear-gradient(120deg,transparent,rgba(124,92,255,.4),transparent);
+    -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor;mask-composite:exclude;opacity:0;transition:opacity .3s}
+  .tile:hover{transform:translateY(-4px);border-color:var(--stroke-2)}
+  .tile:hover::before{opacity:1}
+  .c12{grid-column:span 12}.c8{grid-column:span 8}.c6{grid-column:span 6}
+  .c5{grid-column:span 5}.c4{grid-column:span 4}.c7{grid-column:span 7}.c3{grid-column:span 3}
+  @media(max-width:900px){.bento>*{grid-column:span 12 !important}}
+  .tile h3{font-family:"Space Grotesk";font-weight:600;font-size:1.15rem;margin-bottom:.5rem}
+  .tile p{color:var(--muted);font-size:.94rem}
+  .tnum{font-family:"JetBrains Mono";font-size:.75rem;color:var(--cyan);margin-bottom:.9rem}
+
+  /* metrics chips */
+  .stat{font-family:"Space Grotesk";font-weight:700;font-size:clamp(2rem,4vw,3rem);line-height:1;
+    background:linear-gradient(90deg,var(--text),var(--cyan));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .stat-l{font-family:"JetBrains Mono";font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-top:.6rem}
+
+  /* ticker */
+  .ticker{overflow:hidden;-webkit-mask:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent);
+    mask:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent)}
+  .ticker-t{display:flex;gap:3rem;width:max-content;animation:tick 30s linear infinite}
+  .ticker-t span{font-family:"Space Grotesk";font-weight:500;font-size:1.15rem;color:var(--muted);white-space:nowrap}
+  @keyframes tick{to{transform:translateX(-50%)}}
+
+  /* SCANNER */
+  .scanner{background:linear-gradient(160deg,rgba(124,92,255,.12),rgba(34,211,238,.06));
+    border:1px solid var(--stroke-2)}
+  .scan-in{display:flex;gap:.7rem;margin-top:1.2rem;flex-wrap:wrap}
+  .scan-in input{flex:1;min-width:180px;background:rgba(0,0,0,.35);border:1px solid var(--stroke-2);
+    color:var(--text);padding:.9rem 1.1rem;border-radius:100px;font-family:"JetBrains Mono";font-size:.9rem;outline:none}
+  .scan-in input:focus{border-color:var(--cyan)}
+  .scan-out{margin-top:1.4rem;display:none}
+  .scan-out.show{display:block;animation:fade .5s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(10px)}}
+  .scan-log{font-family:"JetBrains Mono";font-size:.8rem;color:var(--cyan);min-height:1.2em}
+  .gauge-row{display:flex;gap:1.5rem;align-items:center;flex-wrap:wrap;margin-top:1rem}
+  .gauge{--v:0;width:120px;height:120px;border-radius:50%;flex:none;
+    background:conic-gradient(var(--lime) calc(var(--v)*1%),rgba(255,255,255,.08) 0);
+    display:grid;place-items:center;position:relative}
+  .gauge::after{content:"";position:absolute;inset:9px;border-radius:50%;background:var(--bg-2)}
+  .gauge b{position:relative;z-index:1;font-family:"Space Grotesk";font-size:1.6rem}
+  .findings{flex:1;min-width:200px}
+  .finding{display:flex;gap:.6rem;font-size:.88rem;color:var(--muted);margin-bottom:.5rem}
+  .finding::before{content:"›";color:var(--magenta);font-weight:700}
+
+  /* CAPABILITIES cards inside bento already handled */
+
+  /* CASE EXPLORER */
+  .chips{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1.6rem}
+  .chip{font-family:"JetBrains Mono";font-size:.78rem;padding:.5rem 1rem;border-radius:100px;
+    border:1px solid var(--stroke-2);color:var(--muted);cursor:pointer;transition:all .2s;background:transparent}
+  .chip.active,.chip:hover{color:var(--text);border-color:var(--cyan);background:rgba(34,211,238,.1)}
+  .cases{margin-top:1.4rem;display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+  @media(max-width:820px){.cases{grid-template-columns:1fr}}
+  .case{background:var(--glass);border:1px solid var(--stroke);border-radius:var(--r);padding:1.5rem;cursor:pointer;
+    transition:all .25s}
+  .case:hover{border-color:var(--stroke-2);transform:translateY(-3px)}
+  .case h4{font-family:"Space Grotesk";font-weight:600;font-size:1.05rem;margin-bottom:.4rem}
+  .case .cat{font-family:"JetBrains Mono";font-size:.7rem;color:var(--magenta);text-transform:uppercase;letter-spacing:.1em}
+  .case .detail{max-height:0;overflow:hidden;transition:max-height .35s ease;color:var(--muted);font-size:.9rem}
+  .case.open .detail{max-height:200px;margin-top:.8rem}
+  .case .outlets{font-family:"JetBrains Mono";font-size:.75rem;color:var(--cyan);margin-top:.7rem}
+  .case.hide{display:none}
+
+  /* eco */
+  .eco-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:2rem}
+  @media(max-width:820px){.eco-row{grid-template-columns:1fr}}
+  .eco{padding:1.4rem;border:1px solid var(--stroke);border-radius:var(--r);background:var(--glass);transition:all .25s;display:block}
+  .eco:hover{border-color:var(--violet);transform:translateY(-3px)}
+  .eco .ek{font-family:"JetBrains Mono";font-size:.7rem;color:var(--cyan);text-transform:uppercase;letter-spacing:.12em}
+  .eco .ed{font-family:"Space Grotesk";font-weight:600;font-size:1.1rem;margin:.35rem 0}
+  .eco .eu{font-size:.82rem;color:var(--muted)}
+
+  /* CTA */
+  .final{text-align:center;padding:6rem 0}
+  .final h2{margin:0 auto;max-width:16ch}
+  .final p{color:var(--muted);max-width:48ch;margin:1.3rem auto 2rem}
+
+  /* footer */
+  footer{border-top:1px solid var(--stroke);padding:4rem 0 2rem;position:relative;z-index:2}
+  .fgrid{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:2.5rem}
+  @media(max-width:820px){.fgrid{grid-template-columns:1fr;gap:1.8rem}}
+  .fh{font-family:"JetBrains Mono";font-size:.7rem;color:var(--cyan);text-transform:uppercase;letter-spacing:.14em;margin-bottom:1rem}
+  footer .fl{display:block;color:var(--muted);font-size:.9rem;margin-bottom:.5rem;transition:color .2s}
+  footer .fl:hover{color:var(--text)}
+  .fbot{border-top:1px solid var(--stroke);margin-top:3rem;padding-top:1.5rem;display:flex;
+    justify-content:space-between;flex-wrap:wrap;gap:.8rem;font-size:.8rem;color:var(--muted)}
+  .fbot a{margin-left:1.2rem}
+  .addr{color:var(--muted);font-size:.9rem;line-height:1.6}
+
+  /* testimonials */
+  .qt blockquote{font-family:"Space Grotesk";font-weight:500;font-size:1.05rem;line-height:1.5;color:var(--text)}
+  .qt .who{font-size:.85rem;color:var(--muted);margin-top:1rem}
+  .qt .who b{color:var(--text);font-weight:600}
+  .qt .feat{font-family:"JetBrains Mono";font-size:.72rem;color:var(--cyan);margin-top:.3rem}
+
+  .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+  .reveal.in{opacity:1;transform:none}
+  @media(prefers-reduced-motion:reduce){
+    *{animation:none !important;transition:none !important}
+    .reveal{opacity:1;transform:none}
+    #wipe{display:none}
+  }
+</style>
+</head>
+<body>
+<div id="wipe"></div>
+<div id="gl"><canvas id="glcanvas"></canvas></div>
+<canvas id="stars"></canvas>
+<div class="grain"></div>
+
+<header>
+  <div class="wrap">
+    <a href="#top" class="logo grotesk">aggrandize<b>hq</b></a>
+    <nav class="navlinks">
+      <a href="#capabilities">Capabilities</a>
+      <a href="#work">Work</a>
+      <a href="#advantage">Why Us</a>
+      <a href="#ecosystem">Ecosystem</a>
+      <a href="#contact" class="pill">Book a Call</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <!-- HERO -->
+  <section class="hero">
+    <canvas id="hcanvas"></canvas>
+    <div class="wrap">
+      <span class="tag mono">Editorial Reach · Search · AI Discovery</span>
+      <h1 class="grotesk" style="margin-top:1.4rem">
+        <div class="story" id="story">
+          <span class="grad">We shape the signal.</span>
+        </div>
+        Long before the market<br>defines <span class="grad">who you are.</span>
+      </h1>
+      <p class="hsub">Aggrandize HQ establishes authority, directs perception, and organizes how you're found — across media, search, and AI-driven systems.</p>
+      <div class="cta-row">
+        <a href="#contact" class="btn btn-main">Book a strategy call →</a>
+        <a href="#work" class="btn btn-ghost">Explore our work</a>
+      </div>
+      <div class="scrollcue mono">scroll to explore ↓</div>
+    </div>
+  </section>
+
+  <!-- METRICS / PROOF BENTO -->
+  <section id="proof">
+    <div class="wrap">
+      <div class="kicker reveal">Signal, quantified</div>
+      <h2 class="reveal">Credibility isn't claimed. It's <span class="grad">inferred.</span></h2>
+      <div class="bento">
+        <div class="tile c3 reveal"><div class="stat" data-count="480" data-suf="+">0</div><div class="stat-l">Placements secured</div></div>
+        <div class="tile c3 reveal"><div class="stat" data-count="60" data-suf="+">0</div><div class="stat-l">Tier-1 outlets</div></div>
+        <div class="tile c3 reveal"><div class="stat" data-count="3">0</div><div class="stat-l">Active markets</div></div>
+        <div class="tile c3 reveal"><div class="stat" data-count="9" data-suf=" yrs">0</div><div class="stat-l">Building since 2017</div></div>
+        <div class="tile c12 reveal">
+          <div class="tnum mono">// coverage stream</div>
+          <div class="ticker"><div class="ticker-t">
+            <span>Forbes</span><span>TechCrunch</span><span>Wall Street Journal</span><span>Business Insider</span><span>Nasdaq</span><span>Inc.</span><span>VentureBeat</span><span>USA Today</span><span>Entrepreneur</span><span>Fortune</span><span>Fast Company</span>
+            <span>Forbes</span><span>TechCrunch</span><span>Wall Street Journal</span><span>Business Insider</span><span>Nasdaq</span><span>Inc.</span><span>VentureBeat</span><span>USA Today</span><span>Entrepreneur</span><span>Fortune</span><span>Fast Company</span>
+          </div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY IT MATTERS -->
+  <section id="why">
+    <div class="wrap">
+      <div class="kicker reveal">Why it matters</div>
+      <h2 class="reveal">Visibility defines <span class="grad">authority.</span></h2>
+      <p class="hsub reveal" style="margin-top:1.4rem;max-width:70ch">Credibility today isn't declared — it's inferred. Investors, partners, and markets rarely dig deep; they scan what shows up, where it shows up, and how consistently. When your presence is scattered, outdated, or absent where it counts, the market fills in the blanks — often wrongly. Authority doesn't come from being everywhere. It comes from being positioned exactly where it matters.</p>
+    </div>
+  </section>
+
+  <!-- SCANNER (hidden) -->
+  <section id="scan" style="display:none">
+    <div class="wrap">
+      <div class="kicker reveal">AI-era visibility scanner</div>
+      <h2 class="reveal">See how the market <span class="grad">interprets you</span> right now.</h2>
+      <div class="tile scanner c12 reveal" style="margin-top:2rem">
+        <h3 class="grotesk">Run a visibility check</h3>
+        <p>Type in a brand or founder name and we'll model how your presence shows up across media, search, and AI discovery.</p>
+        <div class="scan-in">
+          <input id="scanInput" type="text" placeholder="e.g. your brand or name" aria-label="Brand or name" />
+          <button class="btn btn-main" id="scanBtn">Scan →</button>
+        </div>
+        <div class="scan-out" id="scanOut">
+          <div class="scan-log mono" id="scanLog"></div>
+          <div class="gauge-row" id="gaugeRow" style="display:none">
+            <div class="gauge" id="gauge"><b id="gaugeNum">0</b></div>
+            <div class="findings">
+              <div class="finding" id="f1"></div>
+              <div class="finding" id="f2"></div>
+              <div class="finding" id="f3"></div>
+              <a href="#contact" class="btn btn-ghost" style="margin-top:.6rem">Close these gaps → book a call</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="mono" style="font-size:.72rem;color:var(--muted);margin-top:.8rem">* Illustrative demo. A full audit is done manually by our team.</p>
+    </div>
+  </section>
+
+  <!-- CAPABILITIES BENTO -->
+  <section id="capabilities">
+    <div class="wrap">
+      <div class="kicker reveal">Capabilities</div>
+      <h2 class="reveal">Build authority &amp; <span class="grad">control perception.</span></h2>
+      <div class="bento">
+        <div class="tile c6 reveal"><div class="tnum mono">01</div><h3 class="grotesk">Strategic Media &amp; Editorial PR</h3><p>Earn meaningful coverage in the publications that count — each placement engineered to build your narrative, deepen trust, and set your position in the market.</p></div>
+        <div class="tile c6 reveal"><div class="tnum mono">02</div><h3 class="grotesk">Digital Reputation Management</h3><p>Govern how your brand reads across search and media — amplifying what's favorable, quieting what isn't, so the story people find matches where you actually stand.</p></div>
+        <div class="tile c6 reveal"><div class="tnum mono">03</div><h3 class="grotesk">Founder &amp; Executive Positioning</h3><p>Make your name work as an asset. We align your personal presence across media so you command authority with investors, partners, and audiences.</p></div>
+        <div class="tile c6 reveal"><div class="tnum mono">04</div><h3 class="grotesk">AI Discoverability Layer</h3><p>Ready your brand for the next era of discovery — structured to stay visible not only in search, but across the AI systems now surfacing information.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CASE EXPLORER -->
+  <section id="work">
+    <div class="wrap">
+      <div class="kicker reveal">Results</div>
+      <h2 class="reveal">Work that built <span class="grad">real authority.</span></h2>
+      <div class="chips reveal">
+        <button class="chip active" data-f="all">All</button>
+        <button class="chip" data-f="prelaunch">Pre-Launch</button>
+        <button class="chip" data-f="founder">Founder</button>
+        <button class="chip" data-f="global">Global</button>
+      </div>
+      <div class="cases" id="cases">
+        <div class="case" data-cat="prelaunch"><div class="cat mono">Pre-Launch</div><h4 class="grotesk">Pre-Launch Authority Positioning</h4><div class="detail">Placed a startup in tier-1 press before launch, so credibility with investors and partners was already established before the product hit peak visibility.<div class="outlets mono">Forbes · TechCrunch · Yahoo Finance</div></div></div>
+        <div class="case" data-cat="founder"><div class="cat mono">Founder</div><h4 class="grotesk">Founder Authority Buildout</h4><div class="detail">Shaped a deliberate founder story across top-tier outlets, tying personal standing to business credibility and lifting trust in investor and partner conversations.<div class="outlets mono">Entrepreneur · Business Insider · Inc.</div></div></div>
+        <div class="case" data-cat="global"><div class="cat mono">Global</div><h4 class="grotesk">Global Credibility Expansion</h4><div class="detail">Grew brand presence across international press, reinforcing authority in key markets and strengthening perception at scale to fuel growth and partnerships.<div class="outlets mono">Fortune · Fast Company · NY Post</div></div></div>
+      </div>
+      <p class="mono" style="font-size:.72rem;color:var(--muted);margin-top:1rem">Tap a card to expand · filter by type above</p>
+    </div>
+  </section>
+
+  <!-- WHO WE WORK WITH -->
+  <section id="clients">
+    <div class="wrap">
+      <div class="kicker reveal">Who we work with</div>
+      <h2 class="reveal">Partners where visibility <span class="grad">drives real impact.</span></h2>
+      <div class="bento">
+        <div class="tile c4 reveal"><div class="tnum mono">01</div><h3 class="grotesk">Founders &amp; Entrepreneurs</h3><p>Ambitious founders working to establish authority and credibility in crowded, competitive markets.</p></div>
+        <div class="tile c4 reveal"><div class="tnum mono">02</div><h3 class="grotesk">Venture-Backed Startups</h3><p>Fast-scaling startups using strategic media to speed up visibility, draw investor interest, and sharpen market positioning.</p></div>
+        <div class="tile c4 reveal"><div class="tnum mono">03</div><h3 class="grotesk">Established Global Brands</h3><p>Established brands reinforcing global authority and widening their footprint across priority markets.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ADVANTAGE -->
+  <section id="advantage">
+    <div class="wrap">
+      <div class="kicker reveal">Why Aggrandize</div>
+      <h2 class="reveal">The <span class="grad">Aggrandize</span> advantage.</h2>
+      <div class="bento">
+        <div class="tile c6 reveal"><div class="tnum mono">// media network</div><h3 class="grotesk">Global Media Network</h3><p>We work through established editorial relationships across global publications — not cold pitching — which produces consistent, high-quality placements that mirror how credibility is genuinely earned.</p></div>
+        <div class="tile c6 reveal"><div class="tnum mono">// storytelling</div><h3 class="grotesk">Editorial Positioning</h3><p>Coverage by itself doesn't create authority — positioning does. We craft narratives that fit how media, investors, and markets actually read credibility, so every feature strengthens perception.</p></div>
+        <div class="tile c6 reveal"><div class="tnum mono">// control</div><h3 class="grotesk">Reputation Control</h3><p>Your digital footprint becomes the default story about you. We make sure what surfaces reflects where you stand now — not outdated or misaligned signals.</p></div>
+        <div class="tile c6 reveal"><div class="tnum mono">// founder-led</div><h3 class="grotesk">Founder-Led Positioning</h3><p>We operate at the founder level, where perception directly drives capital, partnerships, and market trust — every strategy built around how you need to be seen.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section id="testimonials">
+    <div class="wrap">
+      <div class="kicker reveal">What clients say</div>
+      <h2 class="reveal">Perception that moved <span class="grad">the needle.</span></h2>
+      <div class="bento">
+        <div class="tile qt c4 reveal"><blockquote>"The way they positioned us in the media reshaped how people saw the brand. The coverage we landed noticeably raised our credibility with investors and partners alike."</blockquote><div class="who"><b>Founder</b>, Growth-Stage Startup</div><div class="feat">Featured in Forbes · Business Insider</div></div>
+        <div class="tile qt c4 reveal"><blockquote>"Once the coverage ran, perception of the brand clearly moved — and it showed up directly in our conversations with investors and prospective partners."</blockquote><div class="who"><b>CEO</b>, Venture-Backed Startup</div><div class="feat">Featured in TechCrunch · Yahoo Finance</div></div>
+        <div class="tile qt c4 reveal"><blockquote>"The right placements lifted our positioning and credibility well beyond what we'd anticipated."</blockquote><div class="who"><b>Founder</b>, Fintech Company</div><div class="feat">Featured in MarketWatch · Benzinga</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ECOSYSTEM -->
+  <section id="ecosystem">
+    <div class="wrap">
+      <div class="kicker reveal">Who we are</div>
+      <h2 class="reveal">Part of the <span class="grad">Aggrandize</span> ecosystem.</h2>
+      <p class="hsub reveal" style="margin-top:1rem">The outreach arm of Aggrandize — a multi-vertical ecosystem running since 2017 across the US, India, and the Middle East.</p>
+      <div class="eco-row reveal">
+        <a class="eco" href="https://www.aggrandize.io/" target="_blank" rel="noopener"><div class="ek">Parent Brand</div><div class="ed grotesk">Aggrandize</div><div class="eu">aggrandize.io ↗</div></a>
+        <a class="eco" href="https://www.aggrandizepr.com/" target="_blank" rel="noopener"><div class="ek">Media &amp; Reputation</div><div class="ed grotesk">Aggrandize PR</div><div class="eu">aggrandizepr.com ↗</div></a>
+        <a class="eco" href="https://www.aggrandizedigital.com/" target="_blank" rel="noopener"><div class="ek">Infrastructure</div><div class="ed grotesk">Aggrandize Digital</div><div class="eu">aggrandizedigital.com ↗</div></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="final" id="contact">
+    <div class="wrap">
+      <div class="kicker reveal" style="text-align:center">Take the next step</div>
+      <h2 class="reveal" style="text-align:center;font-size:clamp(2.2rem,5vw,4rem)">Ready to <span class="grad">take control of your narrative?</span></h2>
+      <p class="reveal">How your brand shows up across media, search, and AI systems decides how you're judged before a single conversation starts.</p>
+      <a href="mailto:hello@aggrandizepr.co" class="btn btn-main reveal" style="font-size:1rem;padding:1.1rem 2rem">Book a strategy call →</a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="fgrid">
+      <div>
+        <div class="logo grotesk" style="font-size:1.4rem">aggrandize<b>hq</b></div>
+        <p class="addr" style="margin-top:.8rem;max-width:32ch">Creating credibility, reach, and influence through strategic media. Part of the Aggrandize ecosystem.</p>
+      </div>
+      <div>
+        <div class="fh">Ecosystem</div>
+        <a class="fl" href="https://www.aggrandize.io/" target="_blank" rel="noopener">Aggrandize</a>
+        <a class="fl" href="https://www.aggrandizepr.com/" target="_blank" rel="noopener">Aggrandize PR</a>
+        <a class="fl" href="https://www.aggrandizedigital.com/" target="_blank" rel="noopener">Aggrandize Digital</a>
+      </div>
+      <div>
+        <div class="fh">Office &amp; Contact</div>
+        <p class="addr">11400 Forum Blvd,<br>Columbia, MO 65203, USA</p>
+        <a class="fl" href="mailto:hello@aggrandizepr.co" style="margin-top:.5rem">hello@aggrandizepr.co</a>
+        <a class="fl" href="https://www.linkedin.com/company/aggrandize" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </div>
+    <div class="fbot">
+      <span>© 2026 Aggrandize. Part of the Aggrandize ecosystem.</span>
+      <span><a href="/privacy-policy">Privacy</a><a href="/terms">Terms</a><a href="/unsubscribe">Unsubscribe</a></span>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ---------- loader wipe ---------- */
+window.addEventListener('load',()=>{setTimeout(()=>document.getElementById('wipe').classList.add('gone'),200)});
+
+/* ---------- reveal ---------- */
+const io=new IntersectionObserver((es)=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+/* ---------- count-up ---------- */
+const cio=new IntersectionObserver((es)=>es.forEach(e=>{
+  if(e.isIntersecting){const el=e.target,end=+el.dataset.count,suf=el.dataset.suf||'';let s=null;
+    const step=t=>{if(!s)s=t;const p=Math.min((t-s)/1200,1);el.textContent=Math.floor(p*end)+ (p===1?suf:'');if(p<1)requestAnimationFrame(step)};
+    requestAnimationFrame(step);cio.unobserve(el)}
+}),{threshold:.5});
+document.querySelectorAll('[data-count]').forEach(el=>cio.observe(el));
+
+/* ---------- scroll-story hero ---------- */
+const story=document.getElementById('story');
+const lines=['We shape the signal.','Perception forms first.','Credibility is engineered.'];
+let li=0;
+setInterval(()=>{li=(li+1)%lines.length;
+  const s=story.querySelector('span');s.style.transform='translateY(-100%)';s.style.opacity='0';
+  setTimeout(()=>{s.textContent=lines[li];s.style.transition='none';s.style.transform='translateY(100%)';
+    requestAnimationFrame(()=>{s.style.transition='';s.style.transform='translateY(0)';s.style.opacity='1'})},500);
+},3200);
+
+/* ---------- starfield ---------- */
+(function(){const c=document.getElementById('stars'),x=c.getContext('2d');let w,h,st=[];
+  function rs(){w=c.width=innerWidth;h=c.height=innerHeight;st=Array.from({length:Math.min(90,innerWidth/14)},()=>({x:Math.random()*w,y:Math.random()*h,r:Math.random()*1.3,v:Math.random()*.3+.05}))}
+  function d(){x.clearRect(0,0,w,h);st.forEach(s=>{x.beginPath();x.arc(s.x,s.y,s.r,0,7);x.fillStyle='rgba(180,190,255,'+(s.r/1.3)+')';x.fill();s.y+=s.v;if(s.y>h)s.y=0});requestAnimationFrame(d)}
+  rs();d();addEventListener('resize',rs);
+})();
+
+/* ---------- WebGL mesh gradient (with graceful skip) ---------- */
+(function(){
+  const canvas=document.getElementById('glcanvas');
+  const gl=canvas.getContext('webgl');
+  if(!gl||window.matchMedia('(prefers-reduced-motion:reduce)').matches){canvas.style.display='none';return;}
+  canvas.style.cssText='position:absolute;inset:0;width:100%;height:100%';
+  function rz(){canvas.width=innerWidth;canvas.height=innerHeight;gl.viewport(0,0,canvas.width,canvas.height);}
+  rz();addEventListener('resize',rz);
+  const vs=`attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}`;
+  const fs=`precision highp float;uniform vec2 r;uniform float t;uniform vec2 m;
+  vec3 pal(float d){return mix(mix(vec3(.486,.361,1.),vec3(.133,.827,.933),d),vec3(1.,.365,.635),d*d);}
+  void main(){vec2 uv=gl_FragCoord.xy/r.xy;vec2 p=uv-.5;p.x*=r.x/r.y;
+    float d=0.;for(float i=1.;i<4.;i++){p.x+=.35/i*sin(i*3.*p.y+t*.4+m.x*2.);p.y+=.35/i*cos(i*3.*p.x+t*.35+m.y*2.);}
+    d=length(p);vec3 col=pal(sin(d*2.-t*.2)*.5+.5);
+    col*=smoothstep(1.2,.1,d);gl_FragColor=vec4(col*.6,1.);}`;
+  function sh(t,s){const o=gl.createShader(t);gl.shaderSource(o,s);gl.compileShader(o);return o;}
+  const pr=gl.createProgram();gl.attachShader(pr,sh(gl.VERTEX_SHADER,vs));gl.attachShader(pr,sh(gl.FRAGMENT_SHADER,fs));gl.linkProgram(pr);gl.useProgram(pr);
+  const buf=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buf);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]),gl.STATIC_DRAW);
+  const lp=gl.getAttribLocation(pr,'p');gl.enableVertexAttribArray(lp);gl.vertexAttribPointer(lp,2,gl.FLOAT,false,0,0);
+  const ur=gl.getUniformLocation(pr,'r'),ut=gl.getUniformLocation(pr,'t'),um=gl.getUniformLocation(pr,'m');
+  let mx=0,my=0;addEventListener('mousemove',e=>{mx=e.clientX/innerWidth-.5;my=e.clientY/innerHeight-.5;});
+  function loop(tm){gl.uniform2f(ur,canvas.width,canvas.height);gl.uniform1f(ut,tm*.001);gl.uniform2f(um,mx,my);
+    gl.drawArrays(gl.TRIANGLES,0,6);requestAnimationFrame(loop);}
+  requestAnimationFrame(loop);
+})();
+
+/* ---------- scanner ---------- */
+const sBtn=document.getElementById('scanBtn'),sInput=document.getElementById('scanInput'),
+  sOut=document.getElementById('scanOut'),sLog=document.getElementById('scanLog'),
+  gRow=document.getElementById('gaugeRow'),gauge=document.getElementById('gauge'),gNum=document.getElementById('gaugeNum');
+function runScan(){
+  const name=(sInput.value.trim()||'your brand');
+  sOut.classList.add('show');gRow.style.display='none';
+  const steps=['> initializing signal scan for "'+name+'"...','> crawling media surfaces...','> indexing search results...','> querying AI discovery layer...','> compiling visibility score...'];
+  let i=0;sLog.textContent='';
+  const iv=setInterval(()=>{sLog.textContent=steps[i];i++;
+    if(i>=steps.length){clearInterval(iv);setTimeout(showResult,500);}
+  },520);
+  function showResult(){
+    let score=38+Math.floor(Math.random()*34); // 38-71 -> always "room to improve"
+    gRow.style.display='flex';gauge.style.setProperty('--v',score);
+    let n=0;const gi=setInterval(()=>{n++;gNum.textContent=n;if(n>=score)clearInterval(gi);},18);
+    const gaps=[
+      'Coverage is thin on tier-1 outlets that shape investor perception.',
+      'Search results surface outdated or fragmented narratives.',
+      'Near-invisible on emerging AI discovery surfaces.',
+      'Founder profile isn\'t positioned as a strategic asset yet.',
+      'Authority signals aren\'t consistent across key markets.'
+    ].sort(()=>Math.random()-.5);
+    document.getElementById('f1').textContent=gaps[0];
+    document.getElementById('f2').textContent=gaps[1];
+    document.getElementById('f3').textContent=gaps[2];
+    sLog.textContent='> scan complete — visibility score below';
+  }
+}
+sBtn.addEventListener('click',runScan);
+sInput.addEventListener('keydown',e=>{if(e.key==='Enter')runScan();});
+
+/* ---------- case explorer ---------- */
+document.querySelectorAll('.chip').forEach(ch=>ch.addEventListener('click',()=>{
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));ch.classList.add('active');
+  const f=ch.dataset.f;
+  document.querySelectorAll('.case').forEach(c=>{c.classList.toggle('hide',f!=='all'&&c.dataset.cat!==f)});
+}));
+document.querySelectorAll('.case').forEach(c=>c.addEventListener('click',()=>c.classList.toggle('open')));
+</script>
+</body>
+</html>

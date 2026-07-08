@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Unsubscribe — Aggrandize PR</title>
+<meta name="description" content="Opt out of emails from Aggrandize PR." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#060711; --bg-2:#0C0E1E;
+    --violet:#7C5CFF; --cyan:#22D3EE; --magenta:#FF5DA2;
+    --text:#F4F5FF; --muted:#9BA0C4; --maxw:680px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Inter",system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;-webkit-font-smoothing:antialiased;min-height:100vh;display:flex;flex-direction:column}
+  a{color:var(--cyan);text-decoration:none}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem;flex:1;display:flex;flex-direction:column;justify-content:center}
+  header{position:sticky;top:0;z-index:100;backdrop-filter:blur(14px);background:rgba(6,7,17,.6);border-bottom:1px solid rgba(255,255,255,.09)}
+  header .wrap2{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem;display:flex;align-items:center;height:68px}
+  .logo{font-family:"Space Grotesk";font-weight:700;font-size:1.2rem}
+  .logo b{background:linear-gradient(90deg,var(--violet),var(--cyan));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .kicker{font-family:"JetBrains Mono";font-size:.74rem;letter-spacing:.18em;text-transform:uppercase;color:var(--magenta);margin-bottom:1rem}
+  h1{font-family:"Space Grotesk";font-weight:700;font-size:clamp(1.8rem,5vw,2.6rem);letter-spacing:-.02em;margin-bottom:1rem}
+  p{color:var(--muted);margin-bottom:1.2rem}
+  .card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.14);border-radius:22px;padding:2rem;margin:1.5rem 0}
+  label{display:block;font-size:.85rem;color:var(--muted);margin-bottom:.4rem;font-weight:500}
+  input{width:100%;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.14);color:var(--text);padding:.9rem 1.1rem;border-radius:100px;font-family:"JetBrains Mono";font-size:.9rem;outline:none;margin-bottom:1rem}
+  input:focus{border-color:var(--cyan)}
+  button{font-family:"Space Grotesk";font-weight:600;font-size:.95rem;padding:.95rem 1.8rem;border-radius:100px;border:none;cursor:pointer;background:linear-gradient(90deg,var(--violet),var(--magenta));color:#fff;transition:transform .2s,box-shadow .2s}
+  button:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(255,93,162,.3)}
+  .msg{font-family:"JetBrains Mono";font-size:.85rem;color:var(--cyan);min-height:1.2em;margin-top:.6rem}
+  footer{border-top:1px solid rgba(255,255,255,.09);padding:2rem 0;font-size:.82rem;color:var(--muted)}
+  .fbot{display:flex;gap:1.2rem;flex-wrap:wrap}
+</style>
+</head>
+<body>
+<header><div class="wrap2">
+  <a href="/" class="logo grotesk">aggrandize<b>pr</b></a>
+</div></header>
+
+<main class="wrap">
+  <div class="kicker">Email preferences</div>
+  <h1>You're in control.</h1>
+  <p>We respect your inbox. Enter the email address you'd like to opt out of, and we'll stop sending business-development emails to it.</p>
+
+  <div class="card">
+    <form id="unsubForm" onsubmit="return doUnsub(event)">
+      <label for="email">Email address</label>
+      <input id="email" type="email" required placeholder="you@company.com" />
+      <button type="submit">Unsubscribe me</button>
+      <div class="msg" id="msg"></div>
+    </form>
+  </div>
+  <p style="font-size:.85rem">Prefer to email us directly? Write to <a href="mailto:hello@aggrandizepr.co">hello@aggrandizepr.co</a> with "Unsubscribe" in the subject. We process opt-outs promptly.</p>
+</main>
+
+<footer><div class="wrap">
+  <div class="fbot">
+    <span>© <span id="year"></span> Aggrandize PR.</span>
+    <a href="/privacy-policy">Privacy</a>
+    <a href="/terms">Terms</a>
+    <a href="/unsubscribe">Unsubscribe</a>
+  </div>
+</div></footer>
+
+<script>
+  // CLIENT-SIDE ONLY. Wire this to your ESP (Instantly/Smartlead) or a form backend
+  // (Formspree/Netlify) to actually suppress the address. See note in chat.
+  function doUnsub(e){
+    e.preventDefault();
+    var v = document.getElementById('email').value.trim();
+    document.getElementById('msg').textContent = '✓ ' + v + ' has been marked for removal. You will not receive further emails.';
+    document.getElementById('email').value = '';
+    return false;
+  }
+  document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
