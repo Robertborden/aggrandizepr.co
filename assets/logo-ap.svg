@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <defs>
+    <linearGradient id="gold" x1="24" y1="24" x2="176" y2="176" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#E8CF9A"/>
+      <stop offset="0.5" stop-color="#C9A96A"/>
+      <stop offset="1" stop-color="#A8894F"/>
+    </linearGradient>
+  </defs>
+
+  <!-- A: outline triangle with crossbar (gold) -->
+  <g stroke="url(#gold)" stroke-width="17" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M44 166 L100 40"/>
+    <path d="M156 166 L100 40"/>
+    <path d="M66 124 L134 124"/>
+  </g>
+
+  <!-- Growth bars inside the A (rising = progress) -->
+  <g fill="url(#gold)">
+    <rect x="74" y="106" width="11" height="18" rx="2"/>
+    <rect x="94" y="90"  width="11" height="34" rx="2"/>
+    <rect x="114" y="74" width="11" height="50" rx="2"/>
+  </g>
+
+  <!-- P: stem + bowl curving toward the A -->
+  <g stroke="url(#gold)" stroke-width="16" stroke-linecap="round" fill="none">
+    <path d="M156 58 L156 166"/>
+    <path d="M156 58 C 126 58 124 104 156 104"/>
+  </g>
+
+  <!-- Foundation swoosh -->
+  <path d="M34 176 Q100 192 166 176" stroke="url(#gold)" stroke-width="6" stroke-linecap="round" opacity="0.85"/>
+</svg>
