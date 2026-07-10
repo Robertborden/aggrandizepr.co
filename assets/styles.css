@@ -1,7 +1,7 @@
 /* Aggrandize PR — shared stylesheet */
 :root {
   --navy: #0f1f3d;
-  --accent: #c8a24a;      /* gold */
+  --accent: #c9a96a;      /* gold — matches logo PR */
   --accent-dark: #a8862f;
   --ink: #1c2433;
   --muted: #5a6577;
