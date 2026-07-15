@@ -44,11 +44,6 @@
   .grain{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.04;
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
 
-  /* loader wipe */
-  #wipe{position:fixed;inset:0;z-index:200;background:linear-gradient(120deg,var(--violet),var(--magenta),var(--cyan));
-    transform-origin:top;transition:transform .8s cubic-bezier(.7,0,.2,1)}
-  #wipe.gone{transform:scaleY(0)}
-
   /* NAV */
   header{position:sticky;top:0;z-index:100;backdrop-filter:blur(14px);
     background:rgba(6,7,17,.55);border-bottom:1px solid var(--stroke)}
@@ -209,7 +204,6 @@
 </style>
 </head>
 <body>
-<div id="wipe"></div>
 <div id="gl"><canvas id="glcanvas"></canvas></div>
 <canvas id="stars"></canvas>
 <div class="grain"></div>
@@ -418,9 +412,6 @@
 </footer>
 
 <script>
-/* ---------- loader wipe ---------- */
-window.addEventListener('load',()=>{setTimeout(()=>document.getElementById('wipe').classList.add('gone'),200)});
-
 /* ---------- reveal ---------- */
 const io=new IntersectionObserver((es)=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.12});
 document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
